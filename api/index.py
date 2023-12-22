@@ -37,10 +37,9 @@ def fixtures():
     html_div += nfc_table
 
     html_div += "</div>"
-    headers = {"Content-Type": "text/html"}
 
     # return raw html
-    return render_template_string(html_div), 200, headers
+    return render_template_string(html_div)
 
 
 """Constructs and HTML table from list data
