@@ -8,11 +8,6 @@ from itertools import groupby
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
-def home():
-    return "NFL scores API"
-
-
 @app.route("/api/fixtures", methods=["GET"])
 def fixtures():
     # url = "https://www.pro-football-reference.com/years/2023"
@@ -180,7 +175,3 @@ srs_total
 srs_offense
 srs_defense
 """
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
