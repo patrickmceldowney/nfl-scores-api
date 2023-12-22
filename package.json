@@ -1,0 +1,27 @@
+{
+  "name": "nfl-scores-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node api/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrickmceldowney/nfl-scores-api.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/patrickmceldowney/nfl-scores-api/issues"
+  },
+  "homepage": "https://github.com/patrickmceldowney/nfl-scores-api#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsdom": "^23.0.1",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1"
+  }
+}
