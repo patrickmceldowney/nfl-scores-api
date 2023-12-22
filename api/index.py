@@ -2,10 +2,13 @@ from requests import get
 from typing import List, Dict, Union
 from bs4 import BeautifulSoup
 from tabulate import tabulate
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, abort
 from itertools import groupby
+import os.path
 
 app = Flask(__name__)
+
+test_path = os.path.join(os.path.dirname(__file__), "test.html")
 
 
 @app.route("/")
@@ -13,7 +16,7 @@ def home():
     return "NFL Stats API"
 
 
-@app.route("/api/fixtures", methods=["GET"])
+@app.route("/fixtures", methods=["GET"])
 def fixtures():
     # url = "https://www.pro-football-reference.com/years/2023"
     # response = get(url)
@@ -159,8 +162,14 @@ def save_html_to_file(html_content: str):
 
 
 def read_html_from_file(file_path: str):
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            return file.read()
+    except FileNotFoundError:
+        abort(404)  # Return a 404 error if the file is not found
+    except Exception as e:
+        print(f"An error occurred while reading the file: {e}")
+        abort(500)  # Return a 500 error for other exceptions
 
 
 """table data
@@ -180,3 +189,7 @@ srs_total
 srs_offense
 srs_defense
 """
+
+
+# if __name__ == "__main__":
+#     app.run()
