@@ -9,16 +9,16 @@ const PORT = process.env.PORT || 3000;
 const URL = 'https://www.pro-football-reference.com/years/2023';
 
 app.listen(PORT, () => {
-  console.log(`Running on port ${PORT}`);
+  console.log(`Running on port on http://localhost:${PORT}`);
 });
 
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Cache-Control', 's-max-age=1, stalw-while-revalidate');
   res.send('NFL stats API');
 });
 
-app.get('/api/standings', async (req, res) => {
+app.get('/standings', async (req, res) => {
   try {
     res.setHeader('Content-Type', 'text/html');
     res.setHeader('Cache-Control', 's-max-age=1, stalw-while-revalidate');
