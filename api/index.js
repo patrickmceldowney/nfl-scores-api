@@ -1,5 +1,4 @@
 const app = require('express')();
-const { v4 } = require('uuid');
 const { JSDOM } = require('jsdom');
 const { groupBy } = require('lodash');
 const path = require('path');
