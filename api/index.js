@@ -12,13 +12,13 @@ app.listen(PORT, () => {
   console.log(`Running on port ${PORT}`);
 });
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('Cache-Control', 's-max-age=1, stalw-while-revalidate');
   res.send('NFL stats API');
 });
 
-app.get('/standings', async (req, res) => {
+app.get('/api/standings', async (req, res) => {
   try {
     res.setHeader('Content-Type', 'text/html');
     res.setHeader('Cache-Control', 's-max-age=1, stalw-while-revalidate');
