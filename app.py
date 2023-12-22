@@ -8,6 +8,11 @@ from itertools import groupby
 app = Flask(__name__)
 
 
+@app.route("/", methods=["GET"])
+def home():
+    return "NFL scores API"
+
+
 @app.route("/api/fixtures", methods=["GET"])
 def fixtures():
     # url = "https://www.pro-football-reference.com/years/2023"
@@ -33,6 +38,14 @@ def fixtures():
 
     # return raw html
     return render_template_string(html_div), 200, headers
+
+
+"""Constructs and HTML table from list data
+
+Keyword arguments:
+data -- List data to convert into an html table
+Return: html string
+"""
 
 
 def construct_html_table(data: List[Dict[str, Union[str, None]]], header: str) -> str:
