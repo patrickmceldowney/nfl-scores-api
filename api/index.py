@@ -16,7 +16,7 @@ def home():
     return "NFL Stats API"
 
 
-@app.route("/fixtures", methods=["GET"])
+@app.route("/fixtures")
 def fixtures():
     # url = "https://www.pro-football-reference.com/years/2023"
     # response = get(url)
