@@ -3,8 +3,10 @@ const { JSDOM } = require('jsdom');
 const { groupBy } = require('lodash');
 const path = require('path');
 const fs = require('fs');
+const NodeCache = require('node-cache');
 require('dotenv').config();
 
+const cache = new NodeCache({ stdTTL: 86400 });
 const PORT = process.env.PORT || 3000;
 const URL = 'https://www.pro-football-reference.com/years/2023';
 
@@ -14,45 +16,45 @@ app.listen(PORT, () => {
 
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
-  res.setHeader('Cache-Control', 's-max-age=1, stalw-while-revalidate');
+  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
   res.send('NFL stats API');
 });
 
 app.get('/standings', async (req, res) => {
   try {
     res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Cache-Control', 's-max-age=1, stalw-while-revalidate');
+    res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
 
-    // const res = await fetch('URL', {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'text/html'
-    //   }
-    // })
-    // const data = await res.text()
-    const filePath = path.join(__dirname, 'test.html');
-    fs.readFile(filePath, 'utf-8', (error, htmlContent) => {
-      if (error) {
-        throw error;
-      } else {
-        const afcStandings = extractStandings('AFC', htmlContent);
-        const nfcStandings = extractStandings('NFC', htmlContent);
+    // check if cache has standings
+    const cachedData = cache.get('standings');
+    if (cachedData) {
+      console.log('Found cached data');
+      return res.send(cachedData);
+    }
 
-        // building html body
-        // afc
-        let htmlDiv = `<div style='display: flex; gap: 40px;'>`;
-        const afcTable = constructHtmlTable(afcStandings, 'AFC');
-        htmlDiv += afcTable;
-
-        // nfc
-        const nfcTable = constructHtmlTable(nfcStandings, 'NFC');
-        htmlDiv += nfcTable;
-
-        htmlDiv += '</div>';
-
-        res.send(htmlDiv);
-      }
+    const externalRes = await fetch(URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'text/html',
+      },
     });
+    const scrapedData = await externalRes.text();
+    const afcStandings = extractStandings('AFC', scrapedData);
+    const nfcStandings = extractStandings('NFC', scrapedData);
+
+    // afc
+    let htmlDiv = `<div style='display: flex; gap: 40px;'>`;
+    const afcTable = constructHtmlTable(afcStandings, 'AFC');
+    htmlDiv += afcTable;
+
+    // nfc
+    const nfcTable = constructHtmlTable(nfcStandings, 'NFC');
+    htmlDiv += nfcTable;
+
+    htmlDiv += '</div>';
+
+    cache.set('standings', htmlDiv);
+    res.send(htmlDiv);
   } catch (e) {
     console.error('Error getting results', e);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -67,7 +69,7 @@ app.get('/standings', async (req, res) => {
  * @returns {String} HTML string.
  */
 function constructHtmlTable(data, header) {
-  const htmlDiv = `<div class='conference_wrapper'><h1>${header}</h1>`;
+  const htmlDiv = `<div class='conference_wrapper'><h1 style="font-size: 28px;">${header}</h1>`;
 
   if (!data || !data.length) {
     return '<p>No data available</p>';
@@ -157,7 +159,7 @@ function extractStandings(tableId, html) {
         currentTeam &&
         (dataStat === 'wins' || dataStat === 'losses')
       ) {
-        currentTeam[dataStat] = row.textContent.trim();
+        currentTeam[dataStat === 'wins' ? 'W' : 'L'] = row.textContent.trim();
       }
     });
 
