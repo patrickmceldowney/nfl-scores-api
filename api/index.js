@@ -43,7 +43,7 @@ app.get('/standings', async (req, res) => {
     const nfcStandings = extractStandings('NFC', scrapedData);
 
     // afc
-    let htmlDiv = `<div style='display: flex; gap: 40px;'>`;
+    let htmlDiv = `<div style='display: flex; gap: 40px; justify-content: center;'>`;
     const afcTable = constructHtmlTable(afcStandings, 'AFC');
     htmlDiv += afcTable;
 
@@ -81,7 +81,9 @@ function constructHtmlTable(data, header) {
       if (key === 'team') {
         tableHeader += '<th></th>';
       } else {
-        tableHeader += `<th>${key.charAt(0).toUpperCase() + key.slice(1)}</th>`;
+        tableHeader += `<th style="padding: 5px;">${
+          key.charAt(0).toUpperCase() + key.slice(1)
+        }</th>`;
       }
     }
   }
@@ -101,7 +103,7 @@ function constructHtmlTable(data, header) {
           '<tr>' +
           Object.entries(row)
             .filter(([key]) => key !== 'division')
-            .map(([key, value]) => `<td>${value}</td>`)
+            .map(([key, value]) => `<td style="padding: 5px;">${value}</td>`)
             .join('') +
           '</tr>'
       )
@@ -112,7 +114,7 @@ function constructHtmlTable(data, header) {
 
     // add empty row
     if (i < Object.keys(groupedData).length - 1) {
-      tableRows += '<tr></tr>';
+      tableRows += '<tr><td></td></tr>';
     }
     i++;
   }
